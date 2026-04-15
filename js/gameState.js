@@ -338,7 +338,9 @@ class GameState {
                     const tile = this.boardIndustries[key];
                     if (tile && tile.type === INDUSTRY_TYPES.COAL_MINE &&
                         !tile.flipped && tile.resourceCubes > 0) {
-                        sources.push({ type: 'mine', key, distance, free: true });
+                        for (let c = 0; c < tile.resourceCubes; c++) {
+                            sources.push({ type: 'mine', key, distance, free: true });
+                        }
                     }
                 }
             }
@@ -362,8 +364,12 @@ class GameState {
         sources.sort((a, b) => a.distance - b.distance);
 
         // Also add market as option
-        if (this.coalMarket > 0) {
-            sources.push({ type: 'market', price: this.getCoalPrice(), free: false });
+        let tempCoalMarket = this.coalMarket;
+        while (tempCoalMarket > 0) {
+            const spaceIndex = COAL_MARKET_PRICES.length - tempCoalMarket;
+            const price = COAL_MARKET_PRICES[spaceIndex] || Infinity;
+            sources.push({ type: 'market', price: price, free: false });
+            tempCoalMarket--;
         }
 
         return sources;
@@ -377,13 +383,19 @@ class GameState {
         for (const [key, tile] of Object.entries(this.boardIndustries)) {
             if (tile.type === INDUSTRY_TYPES.IRON_WORKS &&
                 !tile.flipped && tile.resourceCubes > 0) {
-                sources.push({ type: 'works', key, free: true });
+                for (let c = 0; c < tile.resourceCubes; c++) {
+                    sources.push({ type: 'works', key, free: true });
+                }
             }
         }
 
         // Market
-        if (this.ironMarket > 0) {
-            sources.push({ type: 'market', price: this.getIronPrice(), free: false });
+        let tempIronMarket = this.ironMarket;
+        while (tempIronMarket > 0) {
+            const spaceIndex = IRON_MARKET_PRICES.length - tempIronMarket;
+            const price = IRON_MARKET_PRICES[spaceIndex] || Infinity;
+            sources.push({ type: 'market', price: price, free: false });
+            tempIronMarket--;
         }
 
         return sources;
@@ -397,14 +409,18 @@ class GameState {
         for (const [key, tile] of Object.entries(this.boardIndustries)) {
             if (tile.type === INDUSTRY_TYPES.BREWERY && tile.playerId === playerId &&
                 !tile.flipped && tile.resourceCubes > 0) {
-                sources.push({ type: 'own', key });
+                for (let c = 0; c < tile.resourceCubes; c++) {
+                    sources.push({ type: 'own', key });
+                }
             }
         }
         // Own brewery farms
         for (const [farmId, tile] of Object.entries(this.breweryFarmTiles)) {
             if (tile && tile.type === INDUSTRY_TYPES.BREWERY && tile.playerId === playerId &&
                 !tile.flipped && tile.resourceCubes > 0) {
-                sources.push({ type: 'own', key: `farm_${farmId}` });
+                for (let c = 0; c < tile.resourceCubes; c++) {
+                    sources.push({ type: 'own', key: `farm_${farmId}` });
+                }
             }
         }
 
@@ -419,7 +435,9 @@ class GameState {
                     if (tile && tile.type === INDUSTRY_TYPES.BREWERY &&
                         tile.playerId !== playerId &&
                         !tile.flipped && tile.resourceCubes > 0) {
-                        sources.push({ type: 'opponent', key });
+                        for (let c = 0; c < tile.resourceCubes; c++) {
+                            sources.push({ type: 'opponent', key });
+                        }
                     }
                 }
             }
@@ -428,7 +446,9 @@ class GameState {
                 if (tile && tile.type === INDUSTRY_TYPES.BREWERY &&
                     tile.playerId !== playerId &&
                     !tile.flipped && tile.resourceCubes > 0) {
-                    sources.push({ type: 'opponent', key: `farm_${loc}` });
+                    for (let c = 0; c < tile.resourceCubes; c++) {
+                        sources.push({ type: 'opponent', key: `farm_${loc}` });
+                    }
                 }
             }
         }

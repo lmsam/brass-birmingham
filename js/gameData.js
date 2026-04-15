@@ -327,13 +327,13 @@ const REGION_COLORS = {
 // Brewery Farm locations (standalone brewery spots not in cities)
 // ============================================================================
 const BREWERY_FARMS = {
-    northern: { // Between Cannock and Walsall
+    northern: { // West side of Cannock
         name: 'Brewery (N)',
-        x: 385, y: 390,
+        x: 250, y: 355,
     },
     southern: { // Between Kidderminster and Worcester
         name: 'Brewery (S)',
-        x: 175, y: 660,
+        x: 125, y: 660,
     }
 };
 
