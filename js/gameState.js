@@ -363,13 +363,23 @@ class GameState {
         // Sort by distance (nearest first)
         sources.sort((a, b) => a.distance - b.distance);
 
-        // Also add market as option
-        let tempCoalMarket = this.coalMarket;
-        while (tempCoalMarket > 0) {
-            const spaceIndex = COAL_MARKET_PRICES.length - tempCoalMarket;
-            const price = COAL_MARKET_PRICES[spaceIndex] || Infinity;
-            sources.push({ type: 'market', price: price, free: false });
-            tempCoalMarket--;
+        // Also add market as option if connected to a merchant (port)
+        let connectedToMarket = false;
+        for (const loc of visited) {
+            if (MERCHANTS[loc]) {
+                connectedToMarket = true;
+                break;
+            }
+        }
+
+        if (connectedToMarket) {
+            let tempCoalMarket = this.coalMarket;
+            while (tempCoalMarket > 0) {
+                const spaceIndex = COAL_MARKET_PRICES.length - tempCoalMarket;
+                const price = COAL_MARKET_PRICES[spaceIndex] || Infinity;
+                sources.push({ type: 'market', price: price, free: false });
+                tempCoalMarket--;
+            }
         }
 
         return sources;

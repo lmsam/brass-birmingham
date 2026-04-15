@@ -5,3 +5,6 @@ package.json
 *.log
 screenshots/capture.js
 progress.md
+.vscode
+.code-workspace
+.gitignore
